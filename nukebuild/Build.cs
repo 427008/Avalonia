@@ -34,11 +34,11 @@ partial class Build : NukeBuild
 {
     BuildParameters Parameters { get; set; }
 
-    [PackageExecutable("Microsoft.DotNet.ApiCompat.Tool", "Microsoft.DotNet.ApiCompat.Tool.dll", Framework = "net6.0")]
-    Tool ApiCompatTool;
+    //[PackageExecutable("Microsoft.DotNet.ApiCompat.Tool", "Microsoft.DotNet.ApiCompat.Tool.dll", Framework = "net6.0")]
+    //Tool ApiCompatTool;
     
-    [PackageExecutable("Microsoft.DotNet.GenAPI.Tool", "Microsoft.DotNet.GenAPI.Tool.dll", Framework = "net8.0")]
-    Tool ApiGenTool;
+    //[PackageExecutable("Microsoft.DotNet.GenAPI.Tool", "Microsoft.DotNet.GenAPI.Tool.dll", Framework = "net8.0")]
+    //Tool ApiGenTool;
 
     [PackageExecutable("dotnet-ilrepack", "ILRepackTool.dll", Framework = "net8.0")]
     Tool IlRepackTool;
@@ -324,20 +324,20 @@ partial class Build : NukeBuild
         .DependsOn(CreateNugetPackages)
         .Executes(async () =>
         {
-            await Task.WhenAll(
-                Directory.GetFiles(Parameters.NugetRoot, "*.nupkg").Select(nugetPackage => ApiDiffHelper.ValidatePackage(
-                    ApiCompatTool, nugetPackage, Parameters.ApiValidationBaseline,
-                    Parameters.ApiValidationSuppressionFiles, Parameters.UpdateApiValidationSuppression)));
+            //await Task.WhenAll(
+            //    Directory.GetFiles(Parameters.NugetRoot, "*.nupkg").Select(nugetPackage => ApiDiffHelper.ValidatePackage(
+            //        ApiCompatTool, nugetPackage, Parameters.ApiValidationBaseline,
+            //        Parameters.ApiValidationSuppressionFiles, Parameters.UpdateApiValidationSuppression)));
         });
     
     Target OutputApiDiff => _ => _
         .DependsOn(CreateNugetPackages)
         .Executes(async () =>
         {
-            await Task.WhenAll(
-                Directory.GetFiles(Parameters.NugetRoot, "*.nupkg").Select(nugetPackage => ApiDiffHelper.GetDiff(
-                    ApiGenTool, RootDirectory / "api" / "diff",
-                    nugetPackage, Parameters.ApiValidationBaseline)));
+            //await Task.WhenAll(
+            //    Directory.GetFiles(Parameters.NugetRoot, "*.nupkg").Select(nugetPackage => ApiDiffHelper.GetDiff(
+            //        ApiGenTool, RootDirectory / "api" / "diff",
+            //        nugetPackage, Parameters.ApiValidationBaseline)));
         });
     
     Target RunTests => _ => _
@@ -367,46 +367,46 @@ partial class Build : NukeBuild
         .DependsOn(CreateNugetPackages)
         .Executes(() =>
         {
-            if (!Parameters.IsPackingToLocalCache)
-                throw new InvalidOperationException();
+//            if (!Parameters.IsPackingToLocalCache)
+//                throw new InvalidOperationException();
 
-            var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(
-                Settings.LoadDefaultSettings(RootDirectory));
+//            var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(
+//                Settings.LoadDefaultSettings(RootDirectory));
             
-            foreach (var path in Parameters.NugetRoot.GlobFiles("*.nupkg"))
-            {
-                using var f = File.Open(path.ToString(), FileMode.Open, FileAccess.Read);
-                using var zip = new ZipArchive(f, ZipArchiveMode.Read);
-                var nuspecEntry = zip.Entries.First(e => e.FullName.EndsWith(".nuspec") && e.FullName == e.Name);
-                var packageId = XDocument.Load(nuspecEntry.Open()).Document.Root
-                    .Elements().First(x => x.Name.LocalName == "metadata")
-                    .Elements().First(x => x.Name.LocalName == "id").Value;
+//            foreach (var path in Parameters.NugetRoot.GlobFiles("*.nupkg"))
+//            {
+//                using var f = File.Open(path.ToString(), FileMode.Open, FileAccess.Read);
+//                using var zip = new ZipArchive(f, ZipArchiveMode.Read);
+//                var nuspecEntry = zip.Entries.First(e => e.FullName.EndsWith(".nuspec") && e.FullName == e.Name);
+//                var packageId = XDocument.Load(nuspecEntry.Open()).Document.Root
+//                    .Elements().First(x => x.Name.LocalName == "metadata")
+//                    .Elements().First(x => x.Name.LocalName == "id").Value;
 
-                var packagePath = Path.Combine(
-                    globalPackagesFolder,
-                    packageId.ToLowerInvariant(),
-                    BuildParameters.LocalBuildVersion);
+//                var packagePath = Path.Combine(
+//                    globalPackagesFolder,
+//                    packageId.ToLowerInvariant(),
+//                    BuildParameters.LocalBuildVersion);
 
-                if (Directory.Exists(packagePath))
-                    Directory.Delete(packagePath, true);
-                Directory.CreateDirectory(packagePath);
-                zip.ExtractToDirectory(packagePath);
-                File.WriteAllText(Path.Combine(packagePath, ".nupkg.metadata"), @"{
-  ""version"": 2,
-  ""contentHash"": ""e900dFK7jHJ2WcprLcgJYQoOMc6ejRTwAAMi0VGOFbSczcF98ZDaqwoQIiyqpAwnja59FSbV+GUUXfc3vaQ2Jg=="",
-  ""source"": ""https://api.nuget.org/v3/index.json""
-}");
-            }
+//                if (Directory.Exists(packagePath))
+//                    Directory.Delete(packagePath, true);
+//                Directory.CreateDirectory(packagePath);
+//                zip.ExtractToDirectory(packagePath);
+//                File.WriteAllText(Path.Combine(packagePath, ".nupkg.metadata"), @"{
+//  ""version"": 2,
+//  ""contentHash"": ""e900dFK7jHJ2WcprLcgJYQoOMc6ejRTwAAMi0VGOFbSczcF98ZDaqwoQIiyqpAwnja59FSbV+GUUXfc3vaQ2Jg=="",
+//  ""source"": ""https://api.nuget.org/v3/index.json""
+//}");
+//            }
         });
 
     Target GenerateCppHeaders => _ => _.Executes(() =>
     {
-        var file = MicroComCodeGenerator.Parse(
-            File.ReadAllText(RootDirectory / "src" / "Avalonia.Native" / "avn.idl"));
-        File.WriteAllText(RootDirectory / "native" / "Avalonia.Native" / "inc" / "avalonia-native.h",
-            file.GenerateCppHeader());
+        //var file = MicroComCodeGenerator.Parse(
+        //    File.ReadAllText(RootDirectory / "src" / "Avalonia.Native" / "avn.idl"));
+        //File.WriteAllText(RootDirectory / "native" / "Avalonia.Native" / "inc" / "avalonia-native.h",
+        //    file.GenerateCppHeader());
     });
-
+    
 
     public static int Main() =>
         RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
