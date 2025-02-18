@@ -1,6 +1,7 @@
 using Avalonia.Input.Platform;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Avalonia.Reactive;
 using Avalonia.Controls.Presenters;
@@ -629,6 +630,7 @@ namespace Avalonia.Controls
         /// <summary>
         /// Gets or sets the text selected in the TextBox
         /// </summary>
+        [AllowNull]
         public string SelectedText
         {
             get => GetSelection();
@@ -821,6 +823,20 @@ namespace Avalonia.Controls
         {
             get => _canRedo;
             private set => SetAndRaise(CanRedoProperty, ref _canRedo, value);
+        }
+
+        /// <summary>
+        /// Get the number of lines in the TextBox.
+        /// </summary>
+        /// <value>number of lines in the TextBox, or -1 if no layout information is available</value>
+        /// <remarks>
+        /// If Wrap == true, changing the width of the TextBox may change this value.
+        /// The value returned is the number of lines in the entire TextBox, regardless of how many are
+        /// currently in view.
+        /// </remarks>
+        public int GetLineCount()
+        {
+            return this._presenter?.TextLayout.TextLines.Count ?? -1;
         }
 
         /// <summary>
