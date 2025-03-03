@@ -1,6 +1,6 @@
-##  Clone & Build the Avalonia repository (Nuke Installed)
+##  Clone & Build the Avalonia repository in PowerShell (Nuke Installed)
 
-```ps1
+```
 git clone https://github.com/AvaloniaUI/Avalonia.git
 cd Avalonia
 git submodule update --init
