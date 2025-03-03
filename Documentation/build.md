@@ -1,3 +1,14 @@
+##  Clone & Build the Avalonia repository (Nuke Installed)
+
+```ps1
+git clone https://github.com/AvaloniaUI/Avalonia.git
+cd Avalonia
+git submodule update --init
+./build.ps1
+```
+How to install Nuke see later
+
+
 ##  Clone the Avalonia repository
 
 ```bash
